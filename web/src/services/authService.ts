@@ -1,0 +1,22 @@
+import { apiFetch } from "@/lib/api";
+import type { AuthResponse, LoginRequest, RegisterRequest, User } from "@/types/auth";
+
+export function login(data: LoginRequest) {
+  return apiFetch<AuthResponse>("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function register(data: RegisterRequest) {
+  return apiFetch<AuthResponse>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function getCurrentUser(token: string) {
+  return apiFetch<User>("/users/me", {
+    token,
+  });
+}

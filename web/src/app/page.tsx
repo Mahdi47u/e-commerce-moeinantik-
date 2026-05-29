@@ -1,9 +1,16 @@
 import Link from "next/link";
+import AuthStatus from "@/components/layout/AuthStatus";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <header className="container flex items-center justify-between py-5">
+        <Link href="/" className="text-lg font-semibold text-foreground">
+          معین آنتیک
+        </Link>
+        <AuthStatus />
+      </header>
       <section className="container grid min-h-screen items-center gap-10 py-16 lg:grid-cols-[minmax(0,1fr)_520px]">
         <div>
           <p className="text-sm font-medium text-primary">Moein Antik</p>
