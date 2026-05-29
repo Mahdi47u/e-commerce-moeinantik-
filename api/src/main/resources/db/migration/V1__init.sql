@@ -1,0 +1,2 @@
+-- Initial migration placeholder.
+-- Real feature tables will be added as each phase is implemented.

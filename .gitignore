@@ -1,0 +1,9 @@
+api/target/
+web/.next/
+web/node_modules/
+web/out/
+*.log
+.env
+.env.local
+.idea/
+.vscode/

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: moein-antik-shop
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+jwt:
+  secret: change-this-secret-before-production
+  expiration-ms: 86400000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
