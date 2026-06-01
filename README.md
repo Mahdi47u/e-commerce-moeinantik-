@@ -75,7 +75,96 @@ password: minioadmin
 bucket: shop-media
 ```
 
-Create the `shop-media` bucket in the MinIO console before testing uploads.
+The API creates the `shop-media` bucket automatically on first upload. For direct browser access to uploaded files, make sure the bucket/prefix has a public read policy in MinIO.
+
+## Media API
+
+Phase 3 adds a MinIO-backed media library for product and content images.
+
+Admin endpoints, protected by `ADMIN` or `SUPERADMIN` role:
+
+```text
+POST /api/admin/media
+GET /api/admin/media
+DELETE /api/admin/media/{id}
+```
+
+Upload uses `multipart/form-data`:
+
+```text
+file: image/jpeg, image/png, image/webp, or image/gif
+altText: optional
+```
+
+Public metadata endpoint:
+
+```text
+GET /api/media/{id}
+```
+
+## Catalog Taxonomy API
+
+Phase 4 adds the category tree and reusable product attributes.
+
+Category admin endpoints, protected by `ADMIN` or `SUPERADMIN` role:
+
+```text
+POST /api/admin/categories
+GET /api/admin/categories
+GET /api/admin/categories/{id}
+PUT /api/admin/categories/{id}
+DELETE /api/admin/categories/{id}
+```
+
+Public category endpoints:
+
+```text
+GET /api/categories
+GET /api/categories/{slug}
+```
+
+Attribute admin endpoints, protected by `ADMIN` or `SUPERADMIN` role:
+
+```text
+POST /api/admin/attributes
+GET /api/admin/attributes
+GET /api/admin/attributes/{id}
+PUT /api/admin/attributes/{id}
+DELETE /api/admin/attributes/{id}
+POST /api/admin/attributes/{attributeId}/values
+PUT /api/admin/attributes/{attributeId}/values/{valueId}
+DELETE /api/admin/attributes/{attributeId}/values/{valueId}
+```
+
+Public attribute endpoint:
+
+```text
+GET /api/attributes
+```
+
+## Product Catalog API
+
+Phase 5 adds products with variants, gallery images, and attribute assignments.
+
+Product admin endpoints, protected by `ADMIN` or `SUPERADMIN` role:
+
+```text
+POST /api/admin/products
+GET /api/admin/products
+GET /api/admin/products/{id}
+PUT /api/admin/products/{id}
+DELETE /api/admin/products/{id}
+```
+
+Public product endpoints:
+
+```text
+GET /api/products
+GET /api/products?category={categorySlug}
+GET /api/products/{slug}
+```
+
+Product requests can include nested `variants`, `galleryImages`, and `attributes`. Gallery images reference uploaded media asset IDs from Phase 3, and attributes reference definitions from Phase 4.
 
 ## Run Backend
 
@@ -143,11 +232,11 @@ Admin:
 
 ## Phase Plan
 
-1. Project setup
-2. Auth, users, roles
-3. Media layer with MinIO
-4. Categories and attributes
-5. Products, variants, gallery
+1. Project setup - done
+2. Auth, users, roles - done
+3. Media layer with MinIO - backend done
+4. Categories and attributes - backend done
+5. Products, variants, gallery - backend done
 6. Public storefront
 7. Cart
 8. Checkout and orders
