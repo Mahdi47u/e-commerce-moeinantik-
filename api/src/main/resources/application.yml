@@ -14,3 +14,13 @@ jwt:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+payment:
+  zarinpal:
+    merchant-id: change-this-merchant-id
+    request-url: https://api.zarinpal.com/pg/v4/payment/request.json
+    verify-url: https://api.zarinpal.com/pg/v4/payment/verify.json
+    start-pay-url: https://www.zarinpal.com/pg/StartPay
+    callback-url: http://localhost:8080/api/payments/zarinpal/callback
+    frontend-result-url: http://localhost:3000/payment/result
+    currency: IRT
