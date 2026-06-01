@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPERADMIN")
+                        .requestMatchers("/api/cart/**").authenticated()
                         .requestMatchers("/api/users/me/**").authenticated()
                         .anyRequest().permitAll()
                 )
