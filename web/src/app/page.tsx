@@ -1,17 +1,12 @@
 import Link from "next/link";
-import AuthStatus from "@/components/layout/AuthStatus";
+import SiteHeader from "@/components/layout/SiteHeader";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <header className="container flex items-center justify-between py-5">
-        <Link href="/" className="text-lg font-semibold text-foreground">
-          معین آنتیک
-        </Link>
-        <AuthStatus />
-      </header>
-      <section className="container grid min-h-screen items-center gap-10 py-16 lg:grid-cols-[minmax(0,1fr)_520px]">
+      <SiteHeader />
+      <section className="container grid min-h-[calc(100vh-4rem)] items-center gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_520px]">
         <div>
           <p className="text-sm font-medium text-primary">Moein Antik</p>
           <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight text-foreground sm:text-5xl lg:text-6xl">
@@ -30,8 +25,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="rounded-lg border border-border bg-card p-4 shadow-soft">
-          <div className="aspect-[4/5] rounded-md bg-[linear-gradient(135deg,hsl(var(--secondary)),hsl(var(--card)))]" />
+        <div className="rounded-md border border-border bg-card p-4 shadow-soft">
+          <div className="flex aspect-[4/5] items-end rounded-md bg-[radial-gradient(circle_at_30%_20%,hsl(var(--luxury-gold)/0.25),transparent_34%),linear-gradient(145deg,hsl(var(--secondary)),hsl(var(--card)))] p-6">
+            <p className="max-w-xs text-sm leading-7 text-muted-foreground">
+              نمایشگاه آنلاین محصولات با دسته‌بندی، تصویر، ویژگی و قیمت از فاز ششم فعال می‌شود.
+            </p>
+          </div>
         </div>
       </section>
     </main>

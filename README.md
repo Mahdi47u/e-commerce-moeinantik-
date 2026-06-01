@@ -166,6 +166,81 @@ GET /api/products/{slug}
 
 Product requests can include nested `variants`, `galleryImages`, and `attributes`. Gallery images reference uploaded media asset IDs from Phase 3, and attributes reference definitions from Phase 4.
 
+## Public Storefront
+
+Phase 6 adds the first public shopping surfaces in Next.js:
+
+```text
+/products
+/products/{slug}
+```
+
+The storefront reads the public product and category APIs, supports category filtering and text search, and shows product gallery images, variants, prices, and attributes.
+
+## Cart API
+
+Phase 7 adds a user cart connected to product variants. Cart endpoints require an authenticated user token:
+
+```text
+GET /api/cart
+POST /api/cart/items
+PUT /api/cart/items/{itemId}
+DELETE /api/cart/items/{itemId}
+DELETE /api/cart
+```
+
+The frontend includes:
+
+```text
+/cart
+```
+
+Product detail pages can add the first active variant to the cart. Checkout remains a later phase.
+
+## Checkout And Orders API
+
+Phase 8 adds checkout from the authenticated cart and customer order history:
+
+```text
+POST /api/checkout
+GET /api/orders
+GET /api/orders/{id}
+GET /api/admin/orders
+```
+
+Checkout creates a `PENDING_PAYMENT` order, stores item price/name snapshots, decrements stock, and clears the cart. Payment gateway integration remains Phase 9.
+
+The frontend includes:
+
+```text
+/checkout
+/orders
+```
+
+## ZarinPal Payment API
+
+Phase 9 adds ZarinPal payment initiation and callback verification.
+
+Authenticated endpoint:
+
+```text
+POST /api/payments/zarinpal/orders/{orderId}/start
+```
+
+Public callback endpoint used by ZarinPal:
+
+```text
+GET /api/payments/zarinpal/callback?Authority={authority}&Status={status}
+```
+
+The backend requests a ZarinPal authority, redirects the customer to `StartPay`, verifies the callback, marks successful orders as `PROCESSING`, and stores the ZarinPal reference ID. Configure merchant and callback values under `payment.zarinpal` in `application.yml` before live testing.
+
+The frontend includes:
+
+```text
+/payment/result
+```
+
 ## Run Backend
 
 ```bash
@@ -237,10 +312,10 @@ Admin:
 3. Media layer with MinIO - backend done
 4. Categories and attributes - backend done
 5. Products, variants, gallery - backend done
-6. Public storefront
-7. Cart
-8. Checkout and orders
-9. ZarinPal payment
+6. Public storefront - first frontend slice done
+7. Cart - backend and first frontend slice done
+8. Checkout and orders - backend and first frontend slice done
+9. ZarinPal payment - backend and first frontend slice done
 10. Admin orders
 11. SEO, pages, homepage sections
 12. Wishlist
