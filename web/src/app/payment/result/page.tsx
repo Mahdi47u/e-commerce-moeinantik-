@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import SiteHeader from "@/components/layout/SiteHeader";
+import SiteShell from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 
 export default function PaymentResultPage() {
@@ -22,8 +22,7 @@ function PaymentResultContent() {
   const paid = status === "paid";
 
   return (
-    <main className="min-h-screen">
-      <SiteHeader />
+    <SiteShell>
       <section className="container flex min-h-[calc(100vh-4rem)] items-center justify-center py-12">
         <div className="w-full max-w-xl rounded-md border border-border bg-card p-8 text-center shadow-soft">
           {paid ? (
@@ -54,17 +53,16 @@ function PaymentResultContent() {
           </div>
         </div>
       </section>
-    </main>
+    </SiteShell>
   );
 }
 
 function PaymentResultShell() {
   return (
-    <main className="min-h-screen">
-      <SiteHeader />
+    <SiteShell>
       <section className="container flex min-h-[calc(100vh-4rem)] items-center justify-center py-12">
         <div className="h-64 w-full max-w-xl animate-pulse rounded-md bg-secondary" />
       </section>
-    </main>
+    </SiteShell>
   );
 }

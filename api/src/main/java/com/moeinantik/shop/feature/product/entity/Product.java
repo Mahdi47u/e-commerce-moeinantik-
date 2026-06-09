@@ -15,6 +15,7 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,13 +63,16 @@ public class Product extends BaseEntity {
 
     @OrderBy("sortOrder asc, id asc")
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 50)
     private List<ProductVariant> variants = new ArrayList<>();
 
     @OrderBy("sortOrder asc, id asc")
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 50)
     private List<ProductGalleryImage> galleryImages = new ArrayList<>();
 
     @OrderBy("sortOrder asc, id asc")
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 50)
     private List<ProductAttributeAssignment> attributeAssignments = new ArrayList<>();
 }

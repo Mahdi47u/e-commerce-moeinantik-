@@ -1,6 +1,6 @@
 import Link from "next/link";
-import type { Product } from "@/types/catalog";
 import { ProductImage } from "@/components/product/ProductImage";
+import type { Product } from "@/types/catalog";
 
 type ProductCardProps = {
   product: Product;

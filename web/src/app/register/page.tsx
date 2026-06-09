@@ -1,100 +1,10 @@
-"use client";
-
-import Link from "next/link";
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
-import { Button } from "@/components/ui/button";
+import RegisterForm from "@/components/auth/RegisterForm";
+import SiteShell from "@/components/layout/SiteShell";
 
 export default function RegisterPage() {
-  const router = useRouter();
-  const { register } = useAuth();
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSubmitting(true);
-    setError("");
-
-    try {
-      await register({ username, email, password, firstName, lastName, phone });
-      router.push("/");
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "ثبت نام ناموفق بود.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
   return (
-    <main className="container flex min-h-screen items-center justify-center py-12">
-      <form onSubmit={handleSubmit} className="w-full max-w-xl rounded-lg border border-border bg-card p-6 shadow-soft">
-        <p className="text-sm font-medium text-primary">ثبت نام</p>
-        <h1 className="mt-2 text-2xl font-semibold text-foreground">ساخت حساب کاربری</h1>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          برای خرید از فروشگاه معین آنتیک یک حساب کاربری بسازید.
-        </p>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          <Field label="نام کاربری" value={username} onChange={setUsername} required />
-          <Field label="ایمیل" value={email} onChange={setEmail} type="email" required />
-          <Field label="رمز عبور" value={password} onChange={setPassword} type="password" required />
-          <Field label="شماره تماس" value={phone} onChange={setPhone} />
-          <Field label="نام" value={firstName} onChange={setFirstName} />
-          <Field label="نام خانوادگی" value={lastName} onChange={setLastName} />
-        </div>
-
-        {error && (
-          <p className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            {error}
-          </p>
-        )}
-
-        <Button type="submit" disabled={submitting} className="mt-6 w-full">
-          {submitting ? "در حال ثبت نام..." : "ثبت نام"}
-        </Button>
-
-        <p className="mt-5 text-center text-sm text-muted-foreground">
-          حساب دارید؟{" "}
-          <Link href="/login" className="font-medium text-primary">
-            ورود
-          </Link>
-        </p>
-      </form>
-    </main>
-  );
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  type = "text",
-  required = false,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  type?: string;
-  required?: boolean;
-}) {
-  return (
-    <div>
-      <label className="mb-2 block text-sm font-medium text-foreground">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-md border border-input bg-card px-3 text-sm outline-none transition focus:ring-2 focus:ring-ring"
-        required={required}
-      />
-    </div>
+    <SiteShell contentClassName="container flex items-center justify-center py-12">
+      <RegisterForm />
+    </SiteShell>
   );
 }

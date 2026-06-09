@@ -26,6 +26,8 @@ import com.moeinantik.shop.feature.product.model.ProductVariantRequest;
 import com.moeinantik.shop.feature.product.repository.ProductRepository;
 import com.moeinantik.shop.feature.product.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,19 +57,20 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> listAdmin() {
-        return productRepository.findAllByOrderBySortOrderAscCreatedAtDesc().stream()
+    public List<ProductResponse> listAdmin(int page, int size) {
+        return productRepository.findAllByOrderBySortOrderAscCreatedAtDesc(pageable(page, size)).stream()
                 .map(productMapper::toResponse)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> listPublic(String categorySlug) {
+    public List<ProductResponse> listPublic(String categorySlug, int page, int size) {
         List<Product> products = categorySlug == null || categorySlug.isBlank()
-                ? productRepository.findAllByStatusOrderBySortOrderAscCreatedAtDesc(ProductStatus.ACTIVE)
+                ? productRepository.findAllByStatusOrderBySortOrderAscCreatedAtDesc(ProductStatus.ACTIVE, pageable(page, size))
                 : productRepository.findAllByCategorySlugAndStatusOrderBySortOrderAscCreatedAtDesc(
                         categorySlug,
-                        ProductStatus.ACTIVE
+                        ProductStatus.ACTIVE,
+                        pageable(page, size)
                 );
 
         return products.stream()
@@ -310,5 +313,11 @@ public class ProductService {
 
     private <T> List<T> safeList(List<T> values) {
         return values == null ? List.of() : values;
+    }
+
+    private Pageable pageable(int page, int size) {
+        int safePage = Math.max(page, 0);
+        int safeSize = Math.max(1, Math.min(size, 60));
+        return PageRequest.of(safePage, safeSize);
     }
 }

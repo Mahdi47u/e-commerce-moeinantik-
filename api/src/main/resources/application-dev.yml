@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/moein_antik_shop
     username: postgres
-    password: postgres
+    password: Admin@8810
   jpa:
     hibernate:
       ddl-auto: validate

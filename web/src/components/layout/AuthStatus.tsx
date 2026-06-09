@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AuthStatus() {
   const { user, loading, logout } = useAuth();
@@ -26,7 +26,7 @@ export default function AuthStatus() {
 
   return (
     <div className="flex items-center gap-3">
-      <Link href="/account" className="text-sm font-medium text-foreground hover:text-primary">
+      <Link href="/account" className="text-sm font-medium text-foreground transition hover:text-primary">
         {user.username}
       </Link>
       <Button type="button" variant="secondary" onClick={logout}>

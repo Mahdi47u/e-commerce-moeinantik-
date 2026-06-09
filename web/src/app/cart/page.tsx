@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import SiteHeader from "@/components/layout/SiteHeader";
+import SiteShell from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { getCart, removeCartItem, updateCartItem } from "@/services/cartService";
@@ -67,8 +67,7 @@ export default function CartPage() {
   }
 
   return (
-    <main className="min-h-screen">
-      <SiteHeader />
+    <SiteShell>
       <section className="container py-10">
         <div className="flex items-center gap-3">
           <ShoppingBag className="h-6 w-6 text-primary" aria-hidden="true" />
@@ -180,7 +179,7 @@ export default function CartPage() {
           </div>
         )}
       </section>
-    </main>
+    </SiteShell>
   );
 }
 

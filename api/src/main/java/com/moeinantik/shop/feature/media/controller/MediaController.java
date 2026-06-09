@@ -31,8 +31,11 @@ public class MediaController {
     }
 
     @GetMapping("/api/admin/media")
-    public ResponseEntity<List<MediaAssetResponse>> list() {
-        return ResponseEntity.ok(mediaService.list());
+    public ResponseEntity<List<MediaAssetResponse>> list(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "50") int size
+    ) {
+        return ResponseEntity.ok(mediaService.list(page, size));
     }
 
     @GetMapping("/api/media/{id}")

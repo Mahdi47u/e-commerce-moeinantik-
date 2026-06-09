@@ -30,8 +30,11 @@ public class ProductController {
     }
 
     @GetMapping("/api/admin/products")
-    public ResponseEntity<List<ProductResponse>> listAdmin() {
-        return ResponseEntity.ok(productService.listAdmin());
+    public ResponseEntity<List<ProductResponse>> listAdmin(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "30") int size
+    ) {
+        return ResponseEntity.ok(productService.listAdmin(page, size));
     }
 
     @GetMapping("/api/admin/products/{id}")
@@ -55,9 +58,11 @@ public class ProductController {
 
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductResponse>> listPublic(
-            @RequestParam(value = "category", required = false) String categorySlug
+            @RequestParam(value = "category", required = false) String categorySlug,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "24") int size
     ) {
-        return ResponseEntity.ok(productService.listPublic(categorySlug));
+        return ResponseEntity.ok(productService.listPublic(categorySlug, page, size));
     }
 
     @GetMapping("/api/products/{slug}")

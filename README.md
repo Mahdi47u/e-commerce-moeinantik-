@@ -41,6 +41,7 @@ Frontend uses a Next.js version of the same modular idea:
 ```text
 src/app
 src/components
+src/config
 src/services
 src/context
 src/hooks
@@ -241,6 +242,107 @@ The frontend includes:
 /payment/result
 ```
 
+## Admin Orders
+
+Phase 10 adds the first operational admin order surface:
+
+```text
+GET /api/admin/orders
+GET /api/admin/orders/{id}
+PUT /api/admin/orders/{id}/status
+```
+
+The frontend admin route is:
+
+```text
+/admin/orders
+```
+
+Admins can search orders, inspect customer/shipping/item details, and update order status through the fulfillment workflow.
+
+## SEO, Pages, Homepage Sections
+
+Phase 11 adds content pages, homepage sections, and a public homepage payload:
+
+```text
+GET /api/homepage
+GET /api/pages/{slug}
+POST /api/admin/pages
+GET /api/admin/pages
+PUT /api/admin/pages/{id}
+DELETE /api/admin/pages/{id}
+POST /api/admin/homepage/sections
+GET /api/admin/homepage/sections
+PUT /api/admin/homepage/sections/{id}
+DELETE /api/admin/homepage/sections/{id}
+```
+
+The frontend includes dynamic content pages at:
+
+```text
+/pages/{slug}
+```
+
+The homepage reads featured products, categories, and active homepage sections from the API.
+
+## Wishlist
+
+Phase 12 adds authenticated wishlist support:
+
+```text
+GET /api/wishlist
+POST /api/wishlist
+DELETE /api/wishlist/{productId}
+```
+
+The frontend includes:
+
+```text
+/wishlist
+```
+
+Product detail pages can save active products to the wishlist.
+
+## Current Project Stage
+
+The project is in the **functional MVP + storefront polish stage**. The backend has the main commerce foundation, and the frontend now has a usable public storefront shell, responsive navigation, homepage, product listing, and product detail flow. It is not production-ready yet because the admin system, customer dashboard, checkout polish, deployment setup, and security hardening still need work.
+
+What is already implemented:
+
+- JWT email/password auth, user profile, roles, and protected routes
+- MinIO media upload and public media metadata
+- Categories, product attributes, products, variants, galleries, and product SEO fields
+- Public homepage, product listing, product detail, content pages, cart, checkout, orders, payment result, and wishlist pages
+- Cart, checkout, order creation, order history, admin order status management
+- ZarinPal payment start and callback verification
+- Content pages and homepage sections APIs
+- Pagination on major list endpoints: products, orders, media, content pages
+- N+1 mitigation for product, order, and cart collections with batched loading
+- Backend unit/mock/integration test coverage for the main feature modules
+- Responsive storefront shell with shared header, footer, mobile menu, and role-aware admin navigation
+- Dynamic category navigation in the desktop and mobile menus using the public category API
+- Polished homepage hero, featured products section, category discovery section, and empty states
+- Polished product listing page with search, category filters, product count, and empty/error states
+- Polished product detail page with gallery, purchase panel, wishlist action, attributes, and description sections
+- Local CORS configuration for Next.js development ports `3000` through `3004`
+
+What is still lacking:
+
+- Full customer dashboard: profile edit UI, address book, order details, returns/cancellation, preferences
+- Full admin dashboard: product CRUD UI, category CRUD UI, attribute CRUD UI, media library UI, pages UI, homepage section UI, user management
+- Cart, checkout, orders, payment result, auth, and account UI polish
+- Remaining storefront responsive QA, Persian-first copy pass, loading states, empty states, and error states
+- Product search/filter/sort UX with real pagination controls on the frontend
+- OTP login/register flow and optional OAuth2 social login decision
+- Inventory operations: stock history, low-stock alerts, reservation/rollback rules, admin stock tools
+- Shipping methods, shipping prices, delivery tracking, and admin fulfillment notes
+- Discount/coupon system
+- Reviews/ratings or customer questions, if wanted
+- Notifications: email/SMS for OTP, order status, payment result
+- Production hardening: rate limiting, audit logs, security headers, CORS tightening, refresh tokens or session strategy, backup strategy
+- Deployment pipeline, environment separation, monitoring, logs, and production MinIO/PostgreSQL configuration
+- Frontend component tests and end-to-end browser tests
+
 ## Run Backend
 
 ```bash
@@ -281,6 +383,14 @@ Frontend:
 http://localhost:3000
 ```
 
+If port `3000` is busy, run Next.js on another local port:
+
+```bash
+npm run dev -- -p 3004
+```
+
+The backend CORS config currently allows local Next.js development origins from `localhost:3000` through `localhost:3004`, plus the same `127.0.0.1` ports.
+
 ## Design Direction
 
 Theme:
@@ -316,7 +426,22 @@ Admin:
 7. Cart - backend and first frontend slice done
 8. Checkout and orders - backend and first frontend slice done
 9. ZarinPal payment - backend and first frontend slice done
-10. Admin orders
-11. SEO, pages, homepage sections
-12. Wishlist
-13. Testing and deployment prep
+10. Admin orders - backend and first frontend slice done
+11. SEO, pages, homepage sections - backend and first frontend slice done
+12. Wishlist - backend and first frontend slice done
+13. Quality foundation - backend tests, pagination, and N+1 fixes done
+14. Storefront UI design polish - shell, navigation, homepage, products, and product detail in progress/done
+15. Customer dashboard - account home, profile edit, addresses, order detail, preferences
+16. Admin dashboard foundation - admin shell, navigation, reusable table/form patterns
+17. Admin catalog management - products, variants, categories, attributes, media library
+18. Admin content management - homepage sections, content pages, SEO fields
+19. Product discovery - category navigation and local search started; pagination controls and richer sort/filter still pending
+20. Auth evolution - OTP by phone/email, then decide whether OAuth2 is worth adding
+21. Fulfillment and shipping - shipping methods, tracking, stock operations, admin notes
+22. Promotions - coupons, discounts, campaign rules
+23. Notifications - SMS/email for OTP, order status, payment success/failure
+24. Security hardening - rate limiting, audit logs, CORS, security headers, abuse protection
+25. Testing expansion - frontend component tests and end-to-end checkout/admin flows
+26. Deployment and observability - production configs, CI/CD, backups, logs, monitoring
+
+Rate limiting is intentionally placed after the OTP/OAuth decision because the final auth flow changes which endpoints need strict limits and how identity-based limits should work.

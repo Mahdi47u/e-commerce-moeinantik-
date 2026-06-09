@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import SiteHeader from "@/components/layout/SiteHeader";
+import SiteShell from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { getOrders } from "@/services/orderService";
@@ -49,8 +49,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <main className="min-h-screen">
-      <SiteHeader />
+    <SiteShell>
       <section className="container py-10">
         <p className="text-sm font-medium text-primary">سفارش‌ها</p>
         <h1 className="mt-2 text-3xl font-semibold text-foreground">پیگیری خریدهای شما</h1>
@@ -99,7 +98,7 @@ export default function OrdersPage() {
           </div>
         )}
       </section>
-    </main>
+    </SiteShell>
   );
 }
 

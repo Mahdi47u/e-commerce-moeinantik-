@@ -12,6 +12,7 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,5 +29,6 @@ public class Cart extends BaseEntity {
 
     @OrderBy("createdAt asc")
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 50)
     private List<CartItem> items = new ArrayList<>();
 }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import SiteHeader from "@/components/layout/SiteHeader";
+import SiteShell from "@/components/layout/SiteShell";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { getCart } from "@/services/cartService";
@@ -76,8 +76,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen">
-      <SiteHeader />
+    <SiteShell>
       <section className="container py-10">
         <p className="text-sm font-medium text-primary">تکمیل خرید</p>
         <h1 className="mt-2 text-3xl font-semibold text-foreground">اطلاعات ارسال سفارش</h1>
@@ -134,7 +133,7 @@ export default function CheckoutPage() {
           </form>
         )}
       </section>
-    </main>
+    </SiteShell>
   );
 }
 

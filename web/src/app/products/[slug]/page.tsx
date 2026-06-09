@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Check, Package } from "lucide-react";
+import { ArrowRight, Check, Heart, Package } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import SiteHeader from "@/components/layout/SiteHeader";
+import SiteShell from "@/components/layout/SiteShell";
 import { ProductImage } from "@/components/product/ProductImage";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { addCartItem } from "@/services/cartService";
 import { getProduct } from "@/services/catalogService";
+import { addWishlistItem } from "@/services/wishlistService";
 import type { Product } from "@/types/catalog";
-import { Button } from "@/components/ui/button";
 
 export default function ProductDetailPage() {
   const params = useParams<{ slug: string }>();
@@ -19,7 +20,9 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [cartMessage, setCartMessage] = useState("");
+  const [wishlistMessage, setWishlistMessage] = useState("");
   const [addingToCart, setAddingToCart] = useState(false);
+  const [addingToWishlist, setAddingToWishlist] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -48,7 +51,7 @@ export default function ProductDetailPage() {
     };
   }, [params.slug]);
 
-  const primaryVariant = useMemo(() => product?.variants[0], [product]);
+  const primaryVariant = useMemo(() => product?.variants.find((variant) => variant.active) || product?.variants[0], [product]);
 
   async function handleAddToCart() {
     if (!token) {
@@ -73,9 +76,30 @@ export default function ProductDetailPage() {
     }
   }
 
+  async function handleAddToWishlist() {
+    if (!token) {
+      setWishlistMessage("برای ذخیره علاقه مندی ابتدا وارد شوید.");
+      return;
+    }
+
+    if (!product) {
+      return;
+    }
+
+    setAddingToWishlist(true);
+    setWishlistMessage("");
+    try {
+      await addWishlistItem(token, product.id);
+      setWishlistMessage("محصول در علاقه مندی ها ذخیره شد.");
+    } catch (error) {
+      setWishlistMessage(error instanceof Error ? error.message : "ذخیره علاقه مندی ناموفق بود.");
+    } finally {
+      setAddingToWishlist(false);
+    }
+  }
+
   return (
-    <main className="min-h-screen">
-      <SiteHeader />
+    <SiteShell>
       <div className="container py-8">
         <Button asChild variant="ghost" className="mb-6 px-0">
           <Link href="/products">
@@ -107,7 +131,7 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            <article className="lg:pt-8">
+            <article className="lg:pt-6">
               {product.categoryName && (
                 <p className="text-sm font-medium text-primary">{product.categoryName}</p>
               )}
@@ -120,58 +144,71 @@ export default function ProductDetailPage() {
                 </p>
               )}
 
-              <div className="mt-8 flex flex-wrap items-center gap-4 border-y border-border py-5">
-                {primaryVariant && (
-                  <div>
-                    <p className="text-xs font-medium text-muted-foreground">قیمت</p>
-                    <p className="mt-1 text-2xl font-semibold text-primary">{formatPrice(primaryVariant.price)}</p>
-                  </div>
-                )}
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Package className="h-5 w-5 text-primary" aria-hidden="true" />
-                  {primaryVariant && primaryVariant.stockQuantity > 0 ? "موجود در انبار" : "تماس برای موجودی"}
-                </div>
-              </div>
-
-              {product.attributes.length > 0 && (
-                <dl className="mt-8 grid gap-3 sm:grid-cols-2">
-                  {product.attributes.map((attribute) => (
-                    <div key={attribute.id} className="rounded-md border border-border bg-card p-4">
-                      <dt className="text-xs font-medium text-muted-foreground">{attribute.attributeName}</dt>
-                      <dd className="mt-2 text-sm font-semibold text-foreground">{attributeValue(attribute)}</dd>
-                    </div>
-                  ))}
-                </dl>
-              )}
-
-              {product.description && (
-                <div className="mt-8 max-w-3xl text-sm leading-8 text-foreground">
-                  {product.description}
-                </div>
-              )}
-
               <div className="mt-8 rounded-md border border-border bg-card p-5">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5">
+                  {primaryVariant && (
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground">قیمت</p>
+                      <p className="mt-1 text-2xl font-semibold text-primary">{formatPrice(primaryVariant.price)}</p>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Package className="h-5 w-5 text-primary" aria-hidden="true" />
+                    {primaryVariant && primaryVariant.stockQuantity > 0 ? "موجود در انبار" : "تماس برای موجودی"}
+                  </div>
+                </div>
+
+                <div className="mt-5 flex items-start gap-3">
                   <Check className="mt-1 h-5 w-5 text-primary" aria-hidden="true" />
                   <p className="text-sm leading-7 text-muted-foreground">
-                    محصول را به سبد خرید اضافه کنید. پرداخت و ثبت سفارش در فاز بعدی تکمیل می‌شود.
+                    محصول را به سبد خرید اضافه کنید. ثبت سفارش و پرداخت در مرحله بعد تکمیل می شود.
                   </p>
                 </div>
+
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Button type="button" disabled={addingToCart || !primaryVariant} onClick={handleAddToCart}>
                     {addingToCart ? "در حال افزودن..." : "افزودن به سبد خرید"}
+                  </Button>
+                  <Button type="button" variant="secondary" disabled={addingToWishlist} onClick={handleAddToWishlist}>
+                    <Heart className="h-4 w-4" aria-hidden="true" />
+                    {addingToWishlist ? "در حال ذخیره..." : "علاقه مندی"}
                   </Button>
                   <Button asChild variant="secondary">
                     <Link href="/cart">مشاهده سبد</Link>
                   </Button>
                 </div>
+
                 {cartMessage && <p className="mt-4 text-sm font-medium text-primary">{cartMessage}</p>}
+                {wishlistMessage && <p className="mt-2 text-sm font-medium text-primary">{wishlistMessage}</p>}
               </div>
+
+              {product.attributes.length > 0 && (
+                <section className="mt-8">
+                  <h2 className="text-lg font-semibold text-foreground">ویژگی ها</h2>
+                  <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {product.attributes.map((attribute) => (
+                      <div key={attribute.id} className="rounded-md border border-border bg-card p-4">
+                        <dt className="text-xs font-medium text-muted-foreground">{attribute.attributeName}</dt>
+                        <dd className="mt-2 text-sm font-semibold text-foreground">{attributeValue(attribute)}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </section>
+              )}
+
+              {product.description && (
+                <section className="mt-8">
+                  <h2 className="text-lg font-semibold text-foreground">توضیحات</h2>
+                  <div className="mt-3 max-w-3xl text-sm leading-8 text-foreground">
+                    {product.description}
+                  </div>
+                </section>
+              )}
             </article>
           </section>
         )}
       </div>
-    </main>
+    </SiteShell>
   );
 }
 

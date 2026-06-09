@@ -13,6 +13,8 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,8 +72,8 @@ public class MediaService {
     }
 
     @Transactional(readOnly = true)
-    public List<MediaAssetResponse> list() {
-        return mediaAssetRepository.findAllByOrderByCreatedAtDesc().stream()
+    public List<MediaAssetResponse> list(int page, int size) {
+        return mediaAssetRepository.findAllByOrderByCreatedAtDesc(pageable(page, size)).stream()
                 .map(mediaAssetMapper::toResponse)
                 .toList();
     }
@@ -204,5 +206,11 @@ public class MediaService {
     }
 
     private record ImageSize(Integer width, Integer height) {
+    }
+
+    private Pageable pageable(int page, int size) {
+        int safePage = Math.max(page, 0);
+        int safeSize = Math.max(1, Math.min(size, 100));
+        return PageRequest.of(safePage, safeSize);
     }
 }

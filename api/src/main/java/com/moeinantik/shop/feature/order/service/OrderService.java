@@ -20,6 +20,8 @@ import com.moeinantik.shop.feature.product.entity.ProductVariant;
 import com.moeinantik.shop.feature.user.entity.UserEntity;
 import com.moeinantik.shop.feature.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,8 +83,11 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderResponse> listMine(Authentication authentication) {
-        return orderRepository.findAllByUserUsernameOrderByCreatedAtDesc(currentUser(authentication).getUsername()).stream()
+    public List<OrderResponse> listMine(Authentication authentication, int page, int size) {
+        return orderRepository.findAllByUserUsernameOrderByCreatedAtDesc(
+                        currentUser(authentication).getUsername(),
+                        pageable(page, size)
+                ).stream()
                 .map(orderMapper::toResponse)
                 .toList();
     }
@@ -95,10 +100,33 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderResponse> listAdmin() {
-        return orderRepository.findAll().stream()
+    public List<OrderResponse> listAdmin(int page, int size) {
+        return orderRepository.findAllByOrderByCreatedAtDesc(pageable(page, size)).stream()
                 .map(orderMapper::toResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public OrderResponse getAdmin(Long id) {
+        return orderMapper.toResponse(orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order not found")));
+    }
+
+    @Transactional
+    public OrderResponse updateStatus(Long id, OrderStatus status) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Order not found"));
+
+        if (order.getStatus() == OrderStatus.COMPLETED && status != OrderStatus.COMPLETED) {
+            throw new BadRequestException("Completed orders cannot be moved back");
+        }
+
+        if (order.getStatus() == OrderStatus.CANCELLED && status != OrderStatus.CANCELLED) {
+            throw new BadRequestException("Cancelled orders cannot be moved back");
+        }
+
+        order.setStatus(status);
+        return orderMapper.toResponse(order);
     }
 
     private void applyCheckoutDetails(Order order, CheckoutRequest request) {
@@ -176,5 +204,11 @@ public class OrderService {
 
     private String blankToNull(String value) {
         return value == null || value.isBlank() ? null : value.trim();
+    }
+
+    private Pageable pageable(int page, int size) {
+        int safePage = Math.max(page, 0);
+        int safeSize = Math.max(1, Math.min(size, 100));
+        return PageRequest.of(safePage, safeSize);
     }
 }
