@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import AuthField from "@/components/auth/AuthField";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import AuthField from "@/components/auth/AuthField";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -31,15 +31,21 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-soft">
+    <form onSubmit={handleSubmit} className="w-full max-w-md rounded-md border border-border bg-card p-6 shadow-soft">
       <p className="text-sm font-medium text-primary">ورود</p>
       <h1 className="mt-2 text-2xl font-semibold text-foreground">ورود به حساب کاربری</h1>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-        برای خرید، مشاهده سفارش‌ها و مدیریت سبد خرید وارد شوید.
+        برای خرید، مشاهده سفارش ها و مدیریت سبد خرید وارد شوید.
       </p>
 
       <div className="mt-6 space-y-4">
-        <AuthField label="نام کاربری یا ایمیل" value={usernameOrEmail} onChange={setUsernameOrEmail} required />
+        <AuthField
+          label="نام کاربری یا ایمیل"
+          value={usernameOrEmail}
+          onChange={setUsernameOrEmail}
+          placeholder="example@email.com"
+          required
+        />
         <AuthField label="رمز عبور" value={password} onChange={setPassword} type="password" required />
       </div>
 
@@ -55,7 +61,7 @@ export default function LoginForm() {
 
       <p className="mt-5 text-center text-sm text-muted-foreground">
         حساب ندارید؟{" "}
-        <Link href="/register" className="font-medium text-primary">
+        <Link href="/register" className="font-medium text-primary hover:text-foreground">
           ثبت نام
         </Link>
       </p>

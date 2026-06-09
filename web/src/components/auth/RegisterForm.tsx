@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import AuthField from "@/components/auth/AuthField";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import AuthField from "@/components/auth/AuthField";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-xl rounded-lg border border-border bg-card p-6 shadow-soft">
+    <form onSubmit={handleSubmit} className="w-full max-w-xl rounded-md border border-border bg-card p-6 shadow-soft">
       <p className="text-sm font-medium text-primary">ثبت نام</p>
       <h1 className="mt-2 text-2xl font-semibold text-foreground">ساخت حساب کاربری</h1>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -63,7 +63,7 @@ export default function RegisterForm() {
 
       <p className="mt-5 text-center text-sm text-muted-foreground">
         حساب دارید؟{" "}
-        <Link href="/login" className="font-medium text-primary">
+        <Link href="/login" className="font-medium text-primary hover:text-foreground">
           ورود
         </Link>
       </p>
