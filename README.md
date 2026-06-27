@@ -36,17 +36,70 @@ feature/
   setting
 ```
 
-Frontend uses a Next.js version of the same modular idea:
+Frontend uses a Next.js version of the same modular idea, with routes kept thin and feature modules owning page behavior:
 
 ```text
-src/app
-src/components
-src/config
-src/services
-src/context
-src/hooks
-src/lib
-src/types
+web/src/
+  app/          Route entries only. Keep page/layout files thin.
+  features/     Page or domain features: data hooks + section components.
+  components/   Shared UI, layout, product, auth, and admin components.
+  services/     API request functions only.
+  types/        API/domain TypeScript types only.
+  config/       Static navigation/config values.
+  context/      App-wide React providers.
+  hooks/        Truly shared hooks.
+  lib/          Utilities, constants, API client, asset config.
+```
+
+Frontend coupling rules:
+
+- `app/**/page.tsx` should mostly import and render a feature client component.
+- `features/<name>/use*.ts` owns fetching, URL-derived state, and derived data for that feature.
+- `features/<name>/components/*` owns feature-specific visual sections.
+- `components/ui/*` must stay generic and reusable; it should not import feature services or domain-specific data.
+- `services/*` must not know about React state or layout. It only talks to the backend API.
+- Runtime URLs belong in `web/src/config/runtime.ts`; do not hardcode backend or media origins in components.
+- Shared storefront pieces such as `ProductCard` and `ProductImage` live in `components/product`; page-specific grids and filters live in `features/catalog`.
+
+Current storefront feature split:
+
+```text
+web/src/features/home/
+  HomePageClient.tsx
+  useHomepageData.ts
+  components/
+    CategoryRail.tsx
+    CollectionBanner.tsx
+    HeroSection.tsx
+    ProductShowcase.tsx
+    RoomIdeas.tsx
+    TrustStrip.tsx
+
+web/src/features/catalog/
+  CatalogPageClient.tsx
+  useCatalogData.ts
+  types.ts
+  components/
+    CatalogFilters.tsx
+    CatalogHero.tsx
+    CatalogToolbar.tsx
+    ProductGrid.tsx
+
+web/src/features/product-detail/
+  ProductDetailPageClient.tsx
+
+web/src/features/account/
+  AccountPageClient.tsx
+
+web/src/features/auth/
+  LoginPageClient.tsx
+  RegisterPageClient.tsx
+
+web/src/features/admin/
+  orders/
+    AdminOrdersPageClient.tsx
+  products/
+    AdminProductsPageClient.tsx
 ```
 
 ## Local Services
@@ -343,6 +396,62 @@ What is still lacking:
 - Deployment pipeline, environment separation, monitoring, logs, and production MinIO/PostgreSQL configuration
 - Frontend component tests and end-to-end browser tests
 
+## Future Task: Controlled CMS For Storefront Editing
+
+Add a small admin CMS so the store owner can edit important storefront content after the application is deployed, without changing code or redeploying for every banner/photo/copy update.
+
+Preferred direction:
+
+- Build a **controlled content editor**, not a full Elementor clone.
+- Admin route example: `/admin/homepage`
+- Editable areas should include hero banner image, hero title/subtitle, CTA text/link, collection banners, featured product sections, category rail/order, room ideas images, footer/contact copy, and SEO title/description fields.
+- Use approved block types such as `Hero`, `CategoryRail`, `ProductShowcase`, `CollectionBanner`, `TrustStrip`, and `RoomIdeas`.
+- Allow admins to edit block content, choose/upload images from the media library, enable/disable blocks, and reorder blocks.
+- Keep layout and styling controlled by the design system so the public site stays premium, responsive, and consistent.
+
+Avoid building a full drag-and-drop Elementor-style builder at first. A fully flexible builder would be expensive to build, easier to break, harder to make responsive, and more likely to produce inconsistent pages. The safer first version is a block-based CMS where the admin controls content and order, while the app controls layout, spacing, typography, and responsive behavior.
+
+Performance guidance:
+
+- The CMS should not slow down the public storefront if implemented correctly.
+- Public pages should read saved content from the backend API/database and render normal React components.
+- Avoid shipping admin/editor scripts to public storefront pages.
+- Store optimized image URLs and require correct image sizes/aspect ratios for hero and banner areas.
+- Cache public homepage/content payloads when deployed, for example short API caching or revalidation after admin save.
+- Consider adding preview/draft/publish states later, so admins can review changes before they go live.
+
+## Future Task: Admin Dashboard Analytics
+
+Build the admin dashboard as a practical Persian RTL operations surface, inspired by modern commerce dashboards but styled for Moein Antik. The goal is not decorative charts; the goal is helping the store owner quickly understand sales, stock, product health, and content performance.
+
+Dashboard components to implement clearly:
+
+- KPI cards: total sales, paid orders, total orders, active products, low-stock products, category count, featured products, and average order value.
+- Revenue analytics chart: daily/weekly revenue and order count. The first version can use existing order data; the production version should use backend aggregate endpoints.
+- Monthly target component: sales target, current revenue, progress percentage, and warning state when the shop is behind target.
+- Top categories chart: best categories by revenue, order items, or product count. Start with product count until order-item category aggregation is available.
+- Conversion funnel: product views, add-to-cart, checkout started, payment completed, and abandoned carts.
+- Traffic sources: direct, organic search, social media, referral, email/campaigns, and paid ads if used later.
+- Recent orders: latest orders with customer, city, status, payment state, and total.
+- Inventory alerts: low stock, out of stock, draft products without images, active products without price, and products missing SEO fields.
+- Content and SEO alerts: blog posts in draft, pages missing meta title/description, homepage blocks disabled, and images without alt text.
+
+Data source plan:
+
+- Phase 1: dashboard UI reads existing admin orders/products/categories APIs and computes simple totals on the client.
+- Phase 2: add backend aggregate endpoints such as `/api/admin/analytics/overview`, `/api/admin/analytics/revenue`, `/api/admin/analytics/categories`, and `/api/admin/analytics/inventory`.
+- Phase 3: add event tracking for product views, search queries, add-to-cart, checkout start, payment success/failure, and campaign source.
+- Phase 4: add exports and reports for sales, inventory, customer behavior, and SEO/content gaps.
+
+Performance guidance:
+
+- Do not query every raw record for heavy dashboards in production. Use pre-aggregated backend responses for charts and totals.
+- Cache analytics responses for short periods, for example 30 to 120 seconds, because dashboard numbers do not need millisecond accuracy.
+- Avoid large chart libraries until the dashboard truly needs them. CSS/SVG charts are enough for the first version.
+- Lazy-load advanced analytics panels when they are below the fold.
+- Keep admin analytics code out of public storefront bundles.
+- Add database indexes before production analytics grows: order `createdAt`, order `status`, payment status, product status, category, stock quantity, and event timestamp/source.
+
 ## Run Backend
 
 ```bash
@@ -371,6 +480,22 @@ cd web
 npm install
 ```
 
+Optional local environment file:
+
+```bash
+copy .env.example .env.local
+```
+
+Frontend runtime URLs:
+
+```text
+NEXT_PUBLIC_API_URL=http://localhost:8080/api
+NEXT_PUBLIC_MEDIA_URL=http://localhost:9000
+NEXT_PUBLIC_SHOP_MEDIA_URL=http://localhost:9000/shop-media
+```
+
+These values are centralized in `web/src/config/runtime.ts`. Use them through that module instead of hardcoding `localhost` URLs inside components or API helpers.
+
 Start dev server:
 
 ```bash
@@ -389,7 +514,7 @@ If port `3000` is busy, run Next.js on another local port:
 npm run dev -- -p 3004
 ```
 
-The backend CORS config currently allows local Next.js development origins from `localhost:3000` through `localhost:3004`, plus the same `127.0.0.1` ports.
+The backend CORS config currently allows local Next.js development origins from `localhost:3000` through `localhost:3005`, plus the same `127.0.0.1` ports.
 
 ## Design Direction
 
@@ -434,7 +559,7 @@ Admin:
 15. Customer dashboard - account home, profile edit, addresses, order detail, preferences
 16. Admin dashboard foundation - admin shell, navigation, reusable table/form patterns
 17. Admin catalog management - products, variants, categories, attributes, media library
-18. Admin content management - homepage sections, content pages, SEO fields
+18. Admin content management - controlled CMS for homepage sections, content pages, media selection, SEO fields, and block ordering
 19. Product discovery - category navigation and local search started; pagination controls and richer sort/filter still pending
 20. Auth evolution - OTP by phone/email, then decide whether OAuth2 is worth adding
 21. Fulfillment and shipping - shipping methods, tracking, stock operations, admin notes

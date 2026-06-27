@@ -3,7 +3,12 @@ web/.next/
 web/node_modules/
 web/out/
 *.log
+homepage-current-*.png
 .env
 .env.local
 .idea/
 .vscode/
+*.tsbuildinfo
+.agents/
+.codex-bin/
+.impeccable/

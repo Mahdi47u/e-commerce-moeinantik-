@@ -35,7 +35,7 @@ export default function LoginForm() {
       <p className="text-sm font-medium text-primary">ورود</p>
       <h1 className="mt-2 text-2xl font-semibold text-foreground">ورود به حساب کاربری</h1>
       <p className="mt-2 text-sm leading-6 text-muted-foreground">
-        برای خرید، مشاهده سفارش ها و مدیریت سبد خرید وارد شوید.
+        برای خرید، مشاهده سفارش‌ها و مدیریت سبد خرید وارد شوید.
       </p>
 
       <div className="mt-6 space-y-4">

@@ -13,7 +13,7 @@ export default function SiteFooter() {
               alt="معین آنتیک"
               width={180}
               height={109}
-              className="h-12 w-auto object-contain"
+              className="h-12 w-auto object-contain dark:brightness-0 dark:invert"
             />
           </Link>
           <p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">

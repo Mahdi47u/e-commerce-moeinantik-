@@ -1,10 +1,5 @@
-import LoginForm from "@/components/auth/LoginForm";
-import SiteShell from "@/components/layout/SiteShell";
+import LoginPageClient from "@/features/auth/LoginPageClient";
 
 export default function LoginPage() {
-  return (
-    <SiteShell contentClassName="container flex items-center justify-center py-12">
-      <LoginForm />
-    </SiteShell>
-  );
+  return <LoginPageClient />;
 }

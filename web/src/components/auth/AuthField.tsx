@@ -1,3 +1,5 @@
+import { FieldRoot, TextInput } from "@/components/ui/field";
+
 type AuthFieldProps = {
   label: string;
   value: string;
@@ -16,19 +18,14 @@ export default function AuthField({
   placeholder,
 }: AuthFieldProps) {
   return (
-    <div>
-      <label className="mb-2 block text-sm font-medium text-foreground">
-        {label}
-        {required && <span className="mr-1 text-primary">*</span>}
-      </label>
-      <input
+    <FieldRoot label={label} required={required}>
+      <TextInput
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm outline-none transition placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
         required={required}
         placeholder={placeholder}
       />
-    </div>
+    </FieldRoot>
   );
 }

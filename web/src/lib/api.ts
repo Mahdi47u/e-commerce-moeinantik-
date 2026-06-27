@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+import { API_BASE_URL } from "@/config/runtime";
 
 type ApiFetchOptions = RequestInit & {
   token?: string | null;
@@ -6,18 +6,24 @@ type ApiFetchOptions = RequestInit & {
 
 export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
   const { token, headers, ...rest } = options;
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...rest,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...headers,
-    },
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...rest,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+      },
+    });
+  } catch {
+    throw new Error("ارتباط با سرور برقرار نشد. لطفا دوباره تلاش کنید.");
+  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => null);
-    throw new Error(error?.message || "Request failed");
+    throw new Error(error?.message || "درخواست ناموفق بود.");
   }
 
   if (response.status === 204) {

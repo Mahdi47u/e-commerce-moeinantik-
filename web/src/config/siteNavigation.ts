@@ -27,5 +27,12 @@ export const contentNavigation: NavigationLink[] = [
 ];
 
 export const adminNavigation: NavigationLink[] = [
-  { href: "/admin/orders", label: "مدیریت سفارش ها" },
+  { href: "/admin/dashboard", label: "داشبورد" },
+  { href: "/admin/dashboard/orders", label: "سفارش ها" },
+  { href: "/admin/dashboard/products", label: "محصولات" },
+  { href: "/admin/dashboard/categories", label: "دسته بندی ها" },
+  { href: "/admin/dashboard/comments", label: "دیدگاه ها" },
+  { href: "/admin/dashboard/blog", label: "بلاگ" },
+  { href: "/admin/dashboard/settings", label: "تنظیمات" },
+  { href: "/admin/dashboard/seo", label: "سئو" },
 ];

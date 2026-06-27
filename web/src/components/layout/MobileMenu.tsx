@@ -29,7 +29,7 @@ export default function MobileMenu() {
     <div className="md:hidden">
       <button
         type="button"
-        className="grid h-10 w-10 place-items-center rounded-md border border-border text-foreground transition hover:bg-secondary/50"
+        className="grid h-10 w-10 place-items-center rounded-md border border-border text-foreground transition hover:bg-secondary/60"
         aria-label={open ? "بستن منو" : "باز کردن منو"}
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
@@ -51,14 +51,14 @@ export default function MobileMenu() {
             <div className="mt-4 border-t border-border pt-4">
               <p className="text-xs font-semibold text-muted-foreground">فروشگاه</p>
               <div className="mt-2 grid grid-cols-2 gap-2">
-                <QuickLink href="/wishlist" label="علاقه مندی ها" icon={<Heart className="h-4 w-4" />} onClick={close} />
+                <QuickLink href="/wishlist" label="علاقه‌مندی‌ها" icon={<Heart className="h-4 w-4" />} onClick={close} />
                 <QuickLink href="/cart" label="سبد خرید" icon={<ShoppingBag className="h-4 w-4" />} onClick={close} />
-                <QuickLink href="/orders" label="سفارش ها" icon={<PackageCheck className="h-4 w-4" />} onClick={close} />
+                <QuickLink href="/orders" label="سفارش‌ها" icon={<PackageCheck className="h-4 w-4" />} onClick={close} />
                 <QuickLink href="/account" label="حساب کاربری" icon={<UserRound className="h-4 w-4" />} onClick={close} />
               </div>
               <div className="mt-3 grid gap-1">
                 <MobileLink href="/products" label="همه محصولات" onClick={close} />
-                {categoriesLoading && <p className="px-3 py-2 text-sm text-muted-foreground">در حال دریافت دسته بندی ها...</p>}
+                {categoriesLoading && <p className="px-3 py-2 text-sm text-muted-foreground">در حال دریافت دسته‌بندی‌ها...</p>}
                 {!categoriesLoading &&
                   categories.map((category) => (
                     <MobileLink
@@ -127,7 +127,7 @@ function MobileLink({ href, label, onClick, inset = 0 }: NavigationLinkProps) {
     <Link
       href={href}
       onClick={onClick}
-      className="rounded-md px-3 py-2 text-sm font-medium text-foreground transition hover:bg-secondary/50"
+      className="rounded-md px-3 py-2 text-sm font-medium text-foreground transition hover:bg-secondary/60"
       style={{ paddingInlineStart: `${12 + inset * 14}px` }}
     >
       {label}
@@ -140,7 +140,7 @@ function QuickLink({ href, label, icon, onClick }: NavigationLinkProps & { icon:
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:bg-secondary/50"
+      className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:bg-secondary/60"
     >
       {icon}
       {label}
