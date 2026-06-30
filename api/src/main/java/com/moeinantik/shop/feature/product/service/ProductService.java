@@ -128,10 +128,12 @@ public class ProductService {
     }
 
     private void replaceVariants(Product product, List<ProductVariantRequest> requests) {
+        List<ProductVariant> existingVariants = List.copyOf(product.getVariants());
+        Set<ProductVariant> reusedVariants = new HashSet<>();
         product.getVariants().clear();
 
         for (ProductVariantRequest request : safeList(requests)) {
-            ProductVariant variant = new ProductVariant();
+            ProductVariant variant = findReusableVariant(existingVariants, reusedVariants, blankToNull(request.getSku()));
             variant.setProduct(product);
             variant.setTitle(request.getTitle().trim());
             variant.setSku(blankToNull(request.getSku()));
@@ -144,17 +146,45 @@ public class ProductService {
         }
     }
 
+    private ProductVariant findReusableVariant(
+            List<ProductVariant> existingVariants,
+            Set<ProductVariant> reusedVariants,
+            String sku
+    ) {
+        if (sku != null) {
+            for (ProductVariant variant : existingVariants) {
+                if (!reusedVariants.contains(variant) && sku.equals(variant.getSku())) {
+                    reusedVariants.add(variant);
+                    return variant;
+                }
+            }
+        }
+
+        for (ProductVariant variant : existingVariants) {
+            if (!reusedVariants.contains(variant) && variant.getSku() == null) {
+                reusedVariants.add(variant);
+                return variant;
+            }
+        }
+
+        ProductVariant variant = new ProductVariant();
+        reusedVariants.add(variant);
+        return variant;
+    }
+
     private void replaceGalleryImages(Product product, List<ProductGalleryImageRequest> requests) {
-        product.getGalleryImages().clear();
+        List<ProductGalleryImage> existingImages = List.copyOf(product.getGalleryImages());
+        Set<ProductGalleryImage> reusedImages = new HashSet<>();
         Set<Long> usedMediaAssetIds = new HashSet<>();
         boolean primarySeen = false;
+        product.getGalleryImages().clear();
 
         for (ProductGalleryImageRequest request : safeList(requests)) {
             if (!usedMediaAssetIds.add(request.getMediaAssetId())) {
                 throw new BadRequestException("Product gallery contains duplicate media assets");
             }
 
-            ProductGalleryImage image = new ProductGalleryImage();
+            ProductGalleryImage image = findReusableGalleryImage(existingImages, reusedImages, request.getMediaAssetId());
             image.setProduct(product);
             image.setMediaAsset(findMediaAsset(request.getMediaAssetId()));
             image.setAltText(blankToNull(request.getAltText()));
@@ -167,6 +197,23 @@ public class ProductService {
         if (!primarySeen && !product.getGalleryImages().isEmpty()) {
             product.getGalleryImages().get(0).setPrimaryImage(true);
         }
+    }
+
+    private ProductGalleryImage findReusableGalleryImage(
+            List<ProductGalleryImage> existingImages,
+            Set<ProductGalleryImage> reusedImages,
+            Long mediaAssetId
+    ) {
+        for (ProductGalleryImage image : existingImages) {
+            if (!reusedImages.contains(image) && image.getMediaAsset().getId().equals(mediaAssetId)) {
+                reusedImages.add(image);
+                return image;
+            }
+        }
+
+        ProductGalleryImage image = new ProductGalleryImage();
+        reusedImages.add(image);
+        return image;
     }
 
     private void replaceAttributeAssignments(Product product, List<ProductAttributeAssignmentRequest> requests) {
