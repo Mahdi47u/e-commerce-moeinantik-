@@ -6,6 +6,7 @@ export type NavigationLink = {
 export const mainNavigation: NavigationLink[] = [
   { href: "/", label: "خانه" },
   { href: "/products", label: "محصولات" },
+  { href: "/blog", label: "مجله" },
   { href: "/pages/about", label: "درباره گالری" },
   { href: "/pages/contact", label: "تماس با ما" },
 ];
@@ -13,13 +14,14 @@ export const mainNavigation: NavigationLink[] = [
 export const shopNavigation: NavigationLink[] = [
   { href: "/products", label: "همه محصولات" },
   { href: "/products?featured=true", label: "محصولات ویژه" },
-  { href: "/products?sort=newest", label: "تازه ترین ها" },
-  { href: "/wishlist", label: "علاقه مندی ها" },
+  { href: "/products?sort=newest", label: "تازه‌ترین‌ها" },
+  { href: "/wishlist", label: "علاقه‌مندی‌ها" },
   { href: "/cart", label: "سبد خرید" },
-  { href: "/orders", label: "سفارش ها" },
+  { href: "/orders", label: "سفارش‌ها" },
 ];
 
 export const contentNavigation: NavigationLink[] = [
+  { href: "/blog", label: "مجله" },
   { href: "/pages/about", label: "درباره گالری" },
   { href: "/pages/contact", label: "تماس با ما" },
   { href: "/pages/shipping", label: "ارسال و پرداخت" },
@@ -28,10 +30,10 @@ export const contentNavigation: NavigationLink[] = [
 
 export const adminNavigation: NavigationLink[] = [
   { href: "/admin/dashboard", label: "داشبورد" },
-  { href: "/admin/dashboard/orders", label: "سفارش ها" },
+  { href: "/admin/dashboard/orders", label: "سفارش‌ها" },
   { href: "/admin/dashboard/products", label: "محصولات" },
-  { href: "/admin/dashboard/categories", label: "دسته بندی ها" },
-  { href: "/admin/dashboard/comments", label: "دیدگاه ها" },
+  { href: "/admin/dashboard/categories", label: "دسته‌بندی‌ها" },
+  { href: "/admin/dashboard/comments", label: "دیدگاه‌ها" },
   { href: "/admin/dashboard/blog", label: "بلاگ" },
   { href: "/admin/dashboard/settings", label: "تنظیمات" },
   { href: "/admin/dashboard/seo", label: "سئو" },

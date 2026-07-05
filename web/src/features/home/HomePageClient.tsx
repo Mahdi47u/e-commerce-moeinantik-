@@ -26,11 +26,13 @@ export default function HomePageClient() {
           />
         </section>
       )}
-      <CategoryRail categories={categories} />
+      <div id="home-content">
+        <CategoryRail categories={categories} />
+      </div>
 
       <ProductShowcase
         title="منتخب این هفته"
-        products={featuredProducts.slice(0, 4)}
+        products={featuredProducts.slice(0, 6)}
         emptyTitle="هنوز محصولی برای منتخب این هفته ثبت نشده"
         emptyDescription="با فعال کردن محصولات ویژه، این بخش شبیه ویترین اصلی فروشگاه پر می‌شود."
       />
@@ -39,7 +41,7 @@ export default function HomePageClient() {
 
       <ProductShowcase
         title="جدیدترین محصولات"
-        products={newestProducts.length ? newestProducts : featuredProducts.slice(0, 4)}
+        products={newestProducts.length ? newestProducts.slice(0, 6) : featuredProducts.slice(0, 6)}
         emptyTitle="هنوز محصول جدیدی برای نمایش نیست"
         emptyDescription="بعد از ثبت محصولات، این بخش به ویترین تازه‌ترین کالاها تبدیل می‌شود."
       />

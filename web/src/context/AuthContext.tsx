@@ -1,8 +1,14 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { getCurrentUser, login as loginRequest, register as registerRequest } from "@/services/authService";
-import type { AuthResponse, LoginRequest, RegisterRequest, User } from "@/types/auth";
+import {
+  getCurrentUser,
+  login as loginRequest,
+  register as registerRequest,
+  requestOtp as requestOtpRequest,
+  verifyOtp as verifyOtpRequest,
+} from "@/services/authService";
+import type { AuthResponse, LoginRequest, OtpRequest, OtpRequestResponse, OtpVerifyRequest, RegisterRequest, User } from "@/types/auth";
 
 type AuthContextValue = {
   user: User | null;
@@ -10,6 +16,8 @@ type AuthContextValue = {
   loading: boolean;
   login: (data: LoginRequest) => Promise<AuthResponse>;
   register: (data: RegisterRequest) => Promise<AuthResponse>;
+  requestOtp: (data: OtpRequest) => Promise<OtpRequestResponse>;
+  verifyOtp: (data: OtpVerifyRequest) => Promise<AuthResponse>;
   logout: () => void;
 };
 
@@ -51,6 +59,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return response;
   }
 
+  async function requestOtp(data: OtpRequest) {
+    return requestOtpRequest(data);
+  }
+
+  async function verifyOtp(data: OtpVerifyRequest) {
+    const response = await verifyOtpRequest(data);
+    persistAuth(response);
+    return response;
+  }
+
   function logout() {
     localStorage.removeItem("token");
     setToken(null);
@@ -64,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const value = useMemo(
-    () => ({ user, token, loading, login, register, logout }),
+    () => ({ user, token, loading, login, register, requestOtp, verifyOtp, logout }),
     [user, token, loading]
   );
 

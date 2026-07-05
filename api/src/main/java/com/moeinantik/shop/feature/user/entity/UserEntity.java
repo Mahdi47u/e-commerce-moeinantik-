@@ -37,7 +37,7 @@ public class UserEntity extends BaseEntity {
     @Column(length = 100)
     private String lastName;
 
-    @Column(length = 30)
+    @Column(unique = true, length = 30)
     private String phone;
 
     @Column(nullable = false)

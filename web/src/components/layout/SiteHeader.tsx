@@ -18,7 +18,7 @@ const showroomNav = [
   { href: "/products?category=decoration", label: "دکوراسیون" },
   { href: "/products?category=lighting", label: "نورپردازی" },
   { href: "/products?category=gifts", label: "هدیه و خاص" },
-  { href: "/pages/magazine", label: "مجله" },
+  { href: "/blog", label: "مجله" },
 ];
 
 export default function SiteHeader() {

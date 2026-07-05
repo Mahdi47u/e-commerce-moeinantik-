@@ -55,7 +55,7 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Vazirmatn", "Tahoma", "Arial", "system-ui", "sans-serif"],
+        sans: ["Vazir", "Vazirmatn", "Tahoma", "Arial", "system-ui", "sans-serif"],
       },
       boxShadow: {
         soft: "0 18px 45px -28px rgba(33, 30, 26, 0.35)",

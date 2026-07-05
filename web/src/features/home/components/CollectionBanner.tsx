@@ -1,31 +1,54 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { BRAND_HERO_IMAGE_URL } from "@/lib/brandAssets";
+
+const promoCards = [
+  {
+    title: "کالکشن بهار",
+    description: "آینه، مجسمه و قطعات طلایی برای چیدمان روشن‌تر.",
+    href: "/products?category=decoration",
+    image: "/images/home/gold-mirror-clock-wall.jpg",
+  },
+  {
+    title: "هدیه‌های خاص",
+    description: "ظروف پذیرایی و اکسسوری‌های ماندگار برای خانه‌های خاص.",
+    href: "/products?category=gifts",
+    image: "/images/home/gold-serving-set.jpg",
+  },
+];
 
 export function CollectionBanner() {
   return (
     <section className="moein-home-frame py-3 md:py-4">
-      <div className="relative grid min-h-64 overflow-hidden rounded-md border border-border bg-accent md:min-h-56 md:grid-cols-[0.9fr_1.1fr]">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-45 md:static md:min-h-56 md:opacity-100"
-          style={{
-            backgroundImage: `linear-gradient(90deg, rgba(47, 58, 38, 0.16), transparent), url("${BRAND_HERO_IMAGE_URL}")`,
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-accent via-accent/82 to-accent/38 md:hidden" />
-        <div className="relative z-10 flex flex-col justify-end p-5 text-accent-foreground md:order-first md:justify-center md:p-8">
-          <h2 className="text-2xl font-semibold md:text-3xl">کالکشن جدید بهار</h2>
-          <p className="mt-2.5 max-w-[28rem] text-sm leading-7 text-accent-foreground/85 md:mt-3">
-            ترکیبی از متریال‌های طبیعی و طراحی ماندگار برای خانه‌های خاص.
-          </p>
-          <Button asChild variant="outline" className="mt-5 w-fit border-accent-foreground/45 bg-transparent text-accent-foreground hover:bg-accent-foreground/10 md:mt-6">
-            <Link href="/products">
-              مشاهده کالکشن
-              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </Button>
-        </div>
+      <div className="grid gap-4 md:grid-cols-2 md:gap-5">
+        {promoCards.map((card) => (
+          <Link
+            key={card.title}
+            href={card.href}
+            dir="rtl"
+            className="group relative block min-h-[178px] overflow-hidden rounded-md bg-card text-right shadow-[0_18px_45px_-34px_rgba(33,30,26,0.58)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:min-h-[210px]"
+          >
+            <Image
+              src={card.image}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover transition duration-300 ease-out group-hover:scale-[1.035]"
+            />
+            <span
+              className="absolute inset-0 bg-gradient-to-l from-[rgba(30,38,24,0.84)] via-[rgba(30,38,24,0.5)] to-transparent"
+              aria-hidden="true"
+            />
+            <span className="relative z-10 flex h-full min-h-[178px] max-w-[24rem] flex-col items-start justify-center p-5 text-right text-primary-foreground sm:min-h-[210px] sm:p-7">
+              <span className="text-2xl font-semibold leading-9 sm:text-3xl">{card.title}</span>
+              <span className="mt-2 text-sm font-medium leading-7 text-primary-foreground/88">{card.description}</span>
+              <span className="mt-5 inline-flex h-10 w-fit items-center gap-2 rounded-md bg-card/92 px-5 text-sm font-semibold text-accent transition group-hover:bg-primary group-hover:text-primary-foreground">
+                مشاهده
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              </span>
+            </span>
+          </Link>
+        ))}
       </div>
     </section>
   );

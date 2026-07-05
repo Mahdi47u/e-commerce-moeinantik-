@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { MetricCard } from "@/components/ui/metric-card";
 import { StatePanel } from "@/components/ui/state-panel";
 import { useAuth } from "@/context/AuthContext";
+import { BlogAdminPanel } from "@/features/admin/blog/BlogAdminPanel";
 import { ProductCrudPanel, type ProductEditorTarget } from "@/features/admin/products/ProductCrudPanel";
 import { BRAND_LOGO_URL } from "@/lib/brandAssets";
 import { cn } from "@/lib/utils";
@@ -311,7 +312,11 @@ function AdminTabPanel({
     );
   }
 
-  const planned: Record<typeof tab, { title: string; description: string; icon: typeof MessageSquareText }> = {
+  if (tab === "blog") {
+    return <BlogAdminPanel token={token} />;
+  }
+
+  const planned: Record<"comments" | "blog" | "settings" | "seo", { title: string; description: string; icon: typeof MessageSquareText }> = {
     comments: {
       title: "مدیریت دیدگاه ها",
       description: "این تب برای تایید دیدگاه، پاسخ مدیر، گزارش تخلف و حذف دیدگاه آماده می شود.",

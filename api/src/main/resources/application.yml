@@ -3,6 +3,11 @@ spring:
     name: moein-antik-shop
   profiles:
     active: dev
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2s
 
 server:
   port: 8080
@@ -10,6 +15,21 @@ server:
 jwt:
   secret: change-this-secret-before-production
   expiration-ms: 86400000
+
+auth:
+  otp:
+    code-length: 6
+    ttl: 2m
+    resend-cooldown: 60s
+    request-window: 15m
+    max-requests-per-window: 5
+    max-verify-attempts: 5
+    dev-code: "123456"
+    admin-phones:
+      - "09155733360"
+
+cache:
+  key-prefix: moein-antik
 
 springdoc:
   swagger-ui:

@@ -23,6 +23,21 @@ export type LoginRequest = {
   password: string;
 };
 
+export type OtpRequest = {
+  phone: string;
+};
+
+export type OtpRequestResponse = {
+  phone: string;
+  expiresInSeconds: number;
+  resendAfterSeconds: number;
+};
+
+export type OtpVerifyRequest = {
+  phone: string;
+  code: string;
+};
+
 export type RegisterRequest = {
   username: string;
   email: string;

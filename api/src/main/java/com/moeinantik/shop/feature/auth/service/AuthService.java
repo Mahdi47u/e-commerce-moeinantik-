@@ -28,6 +28,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final PhoneNumberNormalizer phoneNumberNormalizer;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -39,13 +40,21 @@ public class AuthService {
             throw new BadRequestException("Email is already taken");
         }
 
+        String phone = null;
+        if (request.getPhone() != null && !request.getPhone().isBlank()) {
+            phone = phoneNumberNormalizer.normalize(request.getPhone());
+            if (userRepository.existsByPhone(phone)) {
+                throw new BadRequestException("Phone is already taken");
+            }
+        }
+
         UserEntity user = new UserEntity();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
-        user.setPhone(request.getPhone());
+        user.setPhone(phone);
         user.getRoles().add(Role.USER);
 
         UserEntity saved = userRepository.save(user);

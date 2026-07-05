@@ -23,7 +23,8 @@ class AuthServiceTest {
             mock(PasswordEncoder.class),
             mock(AuthenticationManager.class),
             mock(UserDetailsService.class),
-            mock(JwtService.class)
+            mock(JwtService.class),
+            mock(PhoneNumberNormalizer.class)
     );
 
     @Test

@@ -23,9 +23,9 @@ export function ProductShowcase({ title, products, emptyTitle, emptyDescription 
       </div>
 
       {products.length ? (
-        <div className="grid grid-cols-1 gap-y-4 min-[520px]:grid-cols-2 min-[520px]:gap-x-3 sm:gap-x-6 sm:gap-y-9 lg:grid-cols-4 2xl:gap-x-8">
+        <div className="grid grid-cols-1 gap-y-4 min-[520px]:grid-cols-2 min-[520px]:gap-x-3 sm:gap-x-4 sm:gap-y-7 lg:grid-cols-4 xl:grid-cols-5 xl:gap-x-5 2xl:grid-cols-6">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} compact />
           ))}
         </div>
       ) : (

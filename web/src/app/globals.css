@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Vazir";
+  src: url("/fonts/Vazir.ttf") format("truetype");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 100 900;
+}
+
 :root {
   --moein-background: oklch(0.965 0.012 82);
   --moein-surface: oklch(0.988 0.006 82);
@@ -101,8 +109,10 @@ body {
     linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--background)) 42rem),
     hsl(var(--background));
   color: hsl(var(--foreground));
-  font-feature-settings: "ss01", "ss02";
+  font-family: Vazir, Vazirmatn, Tahoma, Arial, system-ui, sans-serif;
+  font-feature-settings: "ss01", "ss02", "tnum";
   font-kerning: normal;
+  font-variant-numeric: tabular-nums;
   text-rendering: optimizeLegibility;
 }
 
@@ -150,6 +160,13 @@ body {
 
   .moein-tabular {
     font-variant-numeric: tabular-nums;
+  }
+
+  .moein-hero-display {
+    font-family: Vazir, Vazirmatn, Tahoma, Arial, system-ui, sans-serif;
+    font-feature-settings: "ss01", "ss02", "tnum";
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
   }
 
   .moein-wrap {

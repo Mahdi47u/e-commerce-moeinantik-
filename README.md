@@ -14,6 +14,7 @@ Backend uses the same feature-based architecture style as the BlogApp:
 
 ```text
 common/
+  cache
   config
   entity
   exception
@@ -104,7 +105,7 @@ web/src/features/admin/
 
 ## Local Services
 
-Start PostgreSQL and MinIO:
+Start PostgreSQL, Redis, and MinIO:
 
 ```bash
 docker compose up
@@ -119,6 +120,14 @@ username: postgres
 password: postgres
 ```
 
+Redis:
+
+```text
+localhost:6379
+used for temporary cache state such as OTP codes, rate limits, and short-lived workflow data
+key prefix: moein-antik
+```
+
 MinIO:
 
 ```text
@@ -130,6 +139,23 @@ bucket: shop-media
 ```
 
 The API creates the `shop-media` bucket automatically on first upload. For direct browser access to uploaded files, make sure the bucket/prefix has a public read policy in MinIO.
+
+## OTP Login
+
+OTP login uses Redis for temporary code state and request throttling.
+
+Public auth endpoints:
+
+```text
+POST /api/auth/otp/request
+body: { "phone": "09123456789" }
+
+POST /api/auth/otp/verify
+body: { "phone": "09123456789", "code": "123456" }
+```
+
+In local development, OTP codes are written to the backend log by `LoggingSmsSender`.
+Replace `SmsSender` with an SMS provider implementation later, or route it through RabbitMQ when reliable background delivery is needed.
 
 ## Media API
 
